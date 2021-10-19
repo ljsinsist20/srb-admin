@@ -26,17 +26,44 @@ export default {
       saveBtnDisabled: false,
     }
   },
+  created() {
+    if (this.$route.params.id) {
+      this.fetchDataById(this.$route.params.id)
+    }
+  },
   methods: {
-    sleep(time) {
-      return new Promise((resolve) => setTimeout(resolve, time))
-    },
+    //新增
     saveOrUpdate() {
       this.saveBtnDisabled = true
-      this.saveData()
+      if (this.integralGrade.id) {
+        this.updateData()
+      } else {
+        this.saveData()
+      }
     },
     saveData() {
       integralGradeApi
         .save(this.integralGrade)
+        .then((response) => {
+          this.$message({
+            type: 'success',
+            message: response.message,
+          })
+          this.$router.push('/core/integral-grade/list')
+        })
+        .catch(() => {
+          this.saveBtnDisabled = false
+        })
+    },
+    //修改
+    fetchDataById(id) {
+      integralGradeApi.getById(id).then((response) => {
+        this.integralGrade = response.data.record
+      })
+    },
+    updateData() {
+      integralGradeApi
+        .updateById(this.integralGrade)
         .then((response) => {
           this.$message({
             type: 'success',

@@ -9,9 +9,12 @@
       <el-table-column prop="integralEnd" label="积分区间结束" />
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <!-- <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button> -->
+          <router-link :to="'/core/integral-grade/edit/' + scope.row.id">
+            <el-button size="mini">编辑</el-button>
+          </router-link>
           <el-button size="mini" type="danger" @click="removeById(scope.row.id)">删除</el-button>
         </template>
+
       </el-table-column>
     </el-table>
   </div>
