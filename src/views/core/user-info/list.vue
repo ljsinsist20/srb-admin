@@ -44,7 +44,7 @@
       </el-table-column>
       <el-table-column prop="integral" label="用户积分">
       </el-table-column>
-      <el-table-column prop="createTime" label="注册时间">
+      <el-table-column prop="createTime" label="注册时间" width="200">
       </el-table-column>
       <el-table-column prop="bindStatus" label="绑定状态">
         <template slot-scope="scope">
@@ -59,14 +59,34 @@
           <el-tag v-else type="success" size="mini">正常</el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="操作" align="center" width="200">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.status == 1" type="primary" size="mini" @click="lock(scope.row.id, 0)">
+            锁定
+          </el-button>
+          <el-button v-else type="danger" size="mini" @click="lock(scope.row.id, 1)">
+            解锁
+          </el-button>
+          <el-button type="primary" size="mini" @click="showLoginRecord(scope.row.id)">
+            登录日志
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
-
     <div class="block">
       <!-- <span class="demonstration">完整功能</span> -->
       <el-pagination @size-change="changePageSize" @current-change="changeCurrentPage" :current-page="page" :page-sizes="[5, 10, 20, 30]" :page-size="limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    <el-dialog title="用户登录日志" :visible.sync="dialogTableVisible">
+      <el-table :data="loginRecordList" border stripe>
+        <el-table-column type="index"></el-table-column>
+        <el-table-column prop="ip" label="IP"></el-table-column>
+        <el-table-column prop="createTime" label="登录时间"></el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
+
 </template>
 
 <script>
@@ -111,6 +131,19 @@ export default {
     resetData() {
       this.searchObj = {}
       this.fetchData()
+    },
+
+    lock(id, status) {
+      userInfoApi.lock(id, status).then((response) => {
+        this.$message.success(response.message)
+        this.fetchData()
+      })
+    },
+    showLoginRecord(id) {
+      this.dialogTableVisible = true
+      userInfoApi.getuserLoginRecordTop50(id).then((response) => {
+        this.loginRecordList = response.data.list
+      })
     },
   },
 }
