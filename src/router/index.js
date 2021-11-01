@@ -85,7 +85,22 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/core/user-info',
+    component: Layout,
+    redirect: '/core/user-info/list',
+    name: 'coreUserInfo',
+    meta: { title: '会员管理', icon: 'user' },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'list',
+        name: 'coreUserInfoList',
+        component: () => import('@/views/core/user-info/list'),
+        meta: { title: '会员列表' }
+      }
+    ]
+  },
   {
     path: '/core/dict',
     component: Layout,
@@ -101,7 +116,8 @@ export const constantRoutes = [
         meta: { title: '数据字典' }
       }
     ]
-  }
+  },
+
 
   // {
   //   path: '/example',
